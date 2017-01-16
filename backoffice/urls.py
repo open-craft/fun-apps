@@ -16,6 +16,9 @@ urlpatterns = patterns('backoffice.views.courses_views',
             'enrolled_users', name='course-enrolled-users'),
     url(r'^users-no-reservation/{}?/$'.format(settings.COURSE_KEY_PATTERN),
             'users_without_proctoru_reservation', name='users-without-proctoru-reservation'),
+    url(r'^video/{}?$'.format(settings.COURSE_KEY_PATTERN),
+            'video', name='course-video'),
+
 )
 
 urlpatterns += patterns('backoffice.views.users_views',

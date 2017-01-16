@@ -4,6 +4,8 @@ import datetime
 import logging
 import re
 
+import requests
+
 from django.conf import settings
 from django.contrib import messages
 from django.core.urlresolvers import reverse
@@ -26,10 +28,15 @@ from xmodule.modulestore.django import modulestore
 
 from fun.utils import funwiki as wiki_utils
 from fun.utils.export_data import csv_response
+from videoproviders.api import get_client, MissingCredentials, ClientError
+from videoproviders.models import VideofrontCourseSettings
 
 from ..certificate_manager.verified import get_verified_student_grades, get_enrolled_verified_students
+from ..forms import PlaylistForm
 from ..utils import get_course, group_required, get_course_modes, get_enrollment_mode_count
 from ..utils_proctorU_api import get_mongo_reports, students_registered_in_pu, users_with_cancelled_reservations
+
+
 
 logger = logging.getLogger(__name__)
 
@@ -396,3 +403,57 @@ def get_course_enrollment_counts(course_descriptors_ids):
 def format_datetime(dt):
     FORMAT = '%Y-%m-%d %H:%M'
     return dt.strftime(FORMAT) if dt else ''
+
+
+@group_required('fun_backoffice')
+def video(request, course_key_string):
+
+    ck = CourseKey.from_string(course_key_string)
+    course = get_course(course_key_string)
+    course_info = get_course_infos_or_404([course])[0]
+    if course is None:
+        raise Http404
+
+    videos = []
+    try:
+        university = University.objects.get(code=ck.org)
+    except University.DoesNotExist:
+        university = None
+    #import ipdb; ipdb.set_trace()
+
+    try:
+        videofront_course_settings = VideofrontCourseSettings.objects.get(course_id=ck)
+        form = PlaylistForm({'playlist_id': videofront_course_settings.playlist_id})
+        api_client = get_client(course_key_string)
+        try: # Get list of uploaded videos for current playlist
+            videos = api_client.get_videos()
+        except ClientError as e:
+            error_message = _("Could not fetch video list:") + e.message
+
+    except VideofrontCourseSettings.DoesNotExist:
+        videofront_course_settings = None
+
+    return render(request, 'backoffice/courses/video.html', {
+            'course_key_string': course_key_string,
+            'course_info': course_info,
+            'university': university,
+            'videofront_course_settings': videofront_course_settings,
+            'form': form,
+            'videos': videos,
+            'tab': 'courses',
+            'subtab': 'video',
+        })
+
+
+
+
+    api_client = get_client(course_key_string)
+
+    # Get list of uploaded videos
+    try:
+        videos = api_client.get_videos()
+        return JsonResponse({
+            "videos": videos
+        })
+    except ClientError as e:
+        return json_error_response(_("Could not fetch video list:"), e.message)

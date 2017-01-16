@@ -1,0 +1,38 @@
+{% extends 'backoffice/courses/base-detail.html' %}
+{% load url from future %}
+{% load i18n course staticfiles %}
+
+{% block extra_head %}
+<style></style>
+{% endblock %}
+
+
+{% block tab_content %}
+
+      <div class="row">
+        <div class="col-md-9">
+
+          <div class="course-info">
+            <h2> {% trans 'Video' %} </h2>
+            <p>
+            Token Videofront de l'établissement: {{ university.videofrontauth.token }}<br>
+            </p>
+            <p>
+            <form method="POST" action=".">
+            {{ form }}
+            <button type="submit">Changer</button>
+            </form>
+            </p>
+
+            <p>
+            {{ videos }}
+
+            </p>
+
+
+          </div>
+        </div>
+      </div>
+{% endblock tab_content %}
+
+

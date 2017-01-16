@@ -117,6 +117,7 @@ class Client(BaseClient):
             log_error (bool): in case of error, if this is activated, an error log will be emitted.
             **kwargs: additional arguments to be passed to the requests function
         """
+        #import ipdb; ipdb.set_trace()
         func = getattr(requests, method.lower())
         url = self.videofront_url(endpoint)
 
@@ -173,6 +174,7 @@ class Client(BaseClient):
 
     def get_auth(self):
         """Return the authentication token for the university."""
+        #import ipdb; ipdb.set_trace()
         try:
             university = universities.models.University.objects.get(code=self.course_id.org)
         except universities.models.University.DoesNotExist:

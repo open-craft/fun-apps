@@ -34,6 +34,11 @@
             {% trans "Verified users" %}
         </a>
     </li>
+    <li role="presentation" class="{% if subtab == 'video' %}active{% endif %}">
+        <a href="{% url 'backoffice:course-video' course_info.course.id %}">
+            {% trans "Video" %}
+        </a>
+    </li>
   </ul>
 
 

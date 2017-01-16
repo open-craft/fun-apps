@@ -65,3 +65,10 @@ class ArticleForm(forms.ModelForm):
         # it is not displayed in the frontend
         self.files['thumbnail'] = instance.thumbnail
         return instance
+
+
+class PlaylistForm(forms.Form):
+    playlist_id = forms.CharField(required=True,
+        label=_(u"Course playlist ID"),
+        help_text=_(u"You can use any playlist from the course university"))
+
