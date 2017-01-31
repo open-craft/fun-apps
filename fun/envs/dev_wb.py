@@ -77,3 +77,7 @@ FUN_MONGO_PASSWORD = ''
 ELASTIC_SEARCH_CONFIG = [{'host': 'localhost'},]
 
 SECRET_KEY = 'dev_secret_key'
+
+USE_I18N = True
+LANGUAGES = ( ('fr-FR', 'French'), )
+LANGUAGE_CODE = 'fr-FR'
