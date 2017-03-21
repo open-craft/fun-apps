@@ -12,6 +12,8 @@ class UniversityQuerysetsTests(TestCase):
         u2 = UniversityFactory.create(detail_page_enabled=False, is_obsolete=False)
         u3 = UniversityFactory.create(detail_page_enabled=False, is_obsolete=True)
         u4 = UniversityFactory.create(detail_page_enabled=True, is_obsolete=True)
+        u5 = UniversityFactory.create(detail_page_enabled=False, is_obsolete=False, site_url='https://www.fun-mooc.fr/',
+                                      score=5)
 
         listed_universities = list(views.UniversityLandingView().get_queryset())
 
@@ -19,12 +21,14 @@ class UniversityQuerysetsTests(TestCase):
         self.assertFalse(u2 in listed_universities)
         self.assertFalse(u3 in listed_universities)
         self.assertFalse(u4 in listed_universities)
+        self.assertTrue(u5 in listed_universities)
 
     def test_featured(self):
         u1 = UniversityFactory.create(detail_page_enabled=True, is_obsolete=False, score=1)
         u2 = UniversityFactory.create(detail_page_enabled=False, is_obsolete=False, score=2)
         u3 = UniversityFactory.create(detail_page_enabled=False, is_obsolete=True, score=3)
         u4 = UniversityFactory.create(detail_page_enabled=True, is_obsolete=True, score=4)
+        u5 = UniversityFactory.create(detail_page_enabled=False, is_obsolete=False, site_url='https://www.fun-mooc.fr/', score=5)
 
         featured_universities = list(models.University.objects.featured(4))
 
@@ -32,7 +36,8 @@ class UniversityQuerysetsTests(TestCase):
         self.assertFalse(u2 in featured_universities)
         self.assertFalse(u3 in featured_universities)
         self.assertFalse(u4 in featured_universities)
-        self.assertEqual(1, len(featured_universities))
+        self.assertTrue(u5 in featured_universities)
+        self.assertEqual(2, len(featured_universities))
 
     def test_not_obsolete(self):
         u1 = UniversityFactory.create(detail_page_enabled=True, is_obsolete=False)

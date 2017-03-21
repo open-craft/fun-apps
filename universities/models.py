@@ -27,6 +27,8 @@ class University(models.Model):
     detail_page_enabled = models.BooleanField(_('detail page enabled'),
         default=False, db_index=True,
         help_text=_('Enables the university detail page.'))
+    site_url = models.CharField(_('site url'), max_length=1024, blank=True,
+        help_text=_('Link to the external site for this university.'))
     is_obsolete = models.BooleanField(_('is obsolete'),
         default=False, db_index=True,
         help_text=_('Obsolete universities do not have their logo displayed on the site.'))

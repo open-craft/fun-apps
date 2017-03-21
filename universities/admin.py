@@ -31,6 +31,7 @@ class UniversityAdmin(admin.ModelAdmin):
         (_('Displayed On Site | Banner | Description'), {
             'fields': (
                 ('detail_page_enabled',),
+                ('site_url',),
                 ('is_obsolete',),
                 ('slug',),
                 ('banner',),
