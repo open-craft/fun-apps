@@ -22,7 +22,8 @@ from ..utils import get_enrollment_mode_count
 @skipUnlessLms
 class BaseCourseList(ModuleStoreTestCase):
     def setUp(self):
-        super(BaseCourseList, self).setUp(create_user=False)
+        self.CREATE_USER = False
+        super(BaseCourseList, self).setUp()
         self.user = User.objects.create(username='backoffice', is_staff=True)
         self.user.set_password('password')
         self.user.save()
@@ -47,13 +48,13 @@ class VerifiedCourseList(BaseCourseList):
     def setUp(self):
         super(VerifiedCourseList, self).setUp()
         CourseMode.objects.create(course_id=self.course1.id, mode_slug='honor', mode_display_name=u"honor")
-        CourseMode.objects.create(course_id=self.course1.id, mode_slug='verified', mode_display_name=u"verified")
+        CourseMode.objects.create(course_id=self.course1.id, mode_slug='verified', mode_display_name=u"verified", min_price=100)
         CourseEnrollmentFactory(course_id=self.course1.id, mode='honor')
 
         self.course3 = CourseFactory.create(org=self.university.code, number='003',
                              display_name=u"published", ispublic=True)
         CourseMode.objects.create(course_id=self.course3.id, mode_slug='honor', mode_display_name=u"honor")
-        CourseMode.objects.create(course_id=self.course3.id, mode_slug='verified', mode_display_name=u"verified")
+        CourseMode.objects.create(course_id=self.course3.id, mode_slug='verified', mode_display_name=u"verified", min_price=100)
         CourseEnrollmentFactory(course_id=self.course3.id, mode='honor')
 
 

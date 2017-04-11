@@ -36,7 +36,8 @@ class BaseMicrositeTestCase(ModuleStoreTestCase):
         return user
 
     def setUp(self):
-        super(BaseMicrositeTestCase, self).setUp(create_user=False)
+        self.CREATE_USER = False
+        super(BaseMicrositeTestCase, self).setUp()
         self.backuser1 = self._create_user('backuser1', 'microsite1')
         self.backuser2 = self._create_user('backuser2', 'microsite2')
 

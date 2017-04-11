@@ -19,11 +19,11 @@ def set_instance_id_to_42(this):
 class TestNews(ModuleStoreTestCase):
 
     def setUp(self):
-        password = super(TestNews, self).setUp()
+        super(TestNews, self).setUp()
         self.user.is_superuser = True
         self.user.save()
         UserProfile.objects.create(user=self.user)
-        self.client.login(username=self.user.username, password=password)
+        self.client.login(username=self.user.username, password=self.user_password)
 
     @patch("backoffice.forms.ArticleForm.is_valid")
     @patch("backoffice.forms.ArticleForm.save")

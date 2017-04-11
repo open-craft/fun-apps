@@ -184,7 +184,7 @@ class TestUsers(BaseCourseList):
 
     def test_user_change_course_mode(self):
         CourseMode.objects.create(course_id=self.course1.id, mode_slug='honor', mode_display_name=u"honor")
-        CourseMode.objects.create(course_id=self.course1.id, mode_slug='verified', mode_display_name=u"verified")
+        CourseMode.objects.create(course_id=self.course1.id, mode_slug='verified', mode_display_name=u"verified", min_price=100)
         CourseEnrollmentFactory(course_id=self.course1.id, user=self.user2, mode='honor')
 
         response = self.client.get(reverse('backoffice:user-detail', args=[self.user2.username]))

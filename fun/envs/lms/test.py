@@ -65,6 +65,13 @@ CACHES.update(test.caches)
 INSTALLED_APPS = tuple([app for app in INSTALLED_APPS if app not in DEBUG_TOOLBAR_INSTALLED_APPS])
 MIDDLEWARE_CLASSES = tuple([m for m in MIDDLEWARE_CLASSES if m not in DEBUG_TOOLBAR_MIDDLEWARE_CLASSES])
 
+################ Disable SafeSessionMiddleware
+MIDDLEWARE_CLASSES = list(MIDDLEWARE_CLASSES)
+MIDDLEWARE_CLASSES[
+    MIDDLEWARE_CLASSES.index('openedx.core.djangoapps.safe_sessions.middleware.SafeSessionMiddleware')
+] = 'django.contrib.sessions.middleware.SessionMiddleware'
+MIDDLEWARE_CLASSES = tuple(MIDDLEWARE_CLASSES)
+
 FEATURES['USE_MICROSITES'] = False
 
 # Disable costly calls to publish signals

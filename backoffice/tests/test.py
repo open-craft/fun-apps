@@ -10,7 +10,6 @@ from django.contrib.auth.models import Group
 from django.core.urlresolvers import reverse
 from django.test.utils import override_settings
 from django.utils.translation import ugettext as _
-from django.http import Http404
 
 from lang_pref import LANGUAGE_KEY
 from openedx.core.djangoapps.user_api.preferences.api import set_user_preference
@@ -31,7 +30,7 @@ from universities.tests.factories import UniversityFactory
 @skipUnlessLms
 class BaseTestCase(ModuleStoreTestCase):
     def setUp(self):
-        self.password = super(BaseTestCase, self).setUp()
+        super(BaseTestCase, self).setUp()
         self.course = None
         self.backoffice_group = None
 
@@ -49,7 +48,7 @@ class BaseTestCase(ModuleStoreTestCase):
             CourseUniversityRelationFactory(course=self.fun_course, university=self.university)
 
     def login(self):
-        self.client.login(username=self.user.username, password=self.password)
+        self.client.login(username=self.user.username, password=self.user_password)
 
 
 class BaseBackoffice(BaseTestCase):
@@ -69,7 +68,7 @@ class BaseCourseDetail(BaseTestCase):
 
         self.user.groups.add(self.backoffice_group)
         set_user_preference(self.user, LANGUAGE_KEY, 'en-en')
-        self.client.login(username=self.user.username, password=self.password)
+        self.client.login(username=self.user.username, password=self.user_password)
         self.url = reverse('backoffice:course-detail', args=[unicode(self.course.scope_ids.usage_id.course_key)])
 
 
@@ -84,7 +83,7 @@ class TestAuthentication(BaseBackoffice):
                          response.redirect_chain[0][0])
 
     def test_users_not_belonging_to_group_should_not_login(self):
-        self.client.login(username=self.user.username, password=self.password)
+        self.client.login(username=self.user.username, password=self.user_password)
         response = self.client.get(self.list_url, follow=True)
         # Users that have already logged-in should not be redirected to the
         # login page; instead, they should see a 404 page.
@@ -94,7 +93,7 @@ class TestAuthentication(BaseBackoffice):
         self.user.groups.add(self.backoffice_group)
         self.user.is_staff = True
         self.user.save()
-        self.client.login(username=self.user.username, password=self.password)
+        self.client.login(username=self.user.username, password=self.user_password)
         response = self.client.get(self.list_url)
         self.assertEqual(1, len(response.context['course_infos']))
 
