@@ -28,6 +28,10 @@ def databases(test_root):
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': test_root / 'db' / 'fun.db'
         },
+        'student_module_history': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': test_root / 'db' / 'fun_student_module_history.db'
+        }
     }
 
 mongo_port_num = int(os.environ.get('EDXAPP_TEST_MONGO_PORT', '27017'))
