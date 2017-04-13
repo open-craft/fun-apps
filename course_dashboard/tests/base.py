@@ -14,7 +14,8 @@ from fun.tests.utils import skipUnlessLms
 class BaseCourseDashboardTestCase(ModuleStoreTestCase):
 
     def setUp(self):
-        super(BaseCourseDashboardTestCase, self).setUp(create_user=False)
+        self.CREATE_USER = False
+        super(BaseCourseDashboardTestCase, self).setUp()
         self.course = CourseFactory.create()
         self.problem_module = None
         self._generate_modules_tree(self.course, 'chapter', 'sequential',

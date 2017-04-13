@@ -378,5 +378,7 @@ CKEDITOR_CONFIGS = {
         'entities': False,
         'width': 955,
         'uiColor': '#9AB8F3',
-    }
+        'filebrowserUploadUrl': '/news/ckeditor/upload/',
+        'filebrowserBrowseUrl': '/news/ckeditor/browse/',
+    },
 }

@@ -1,13 +1,17 @@
+# -*- coding: utf-8 -*-
+
 from datetime import datetime
 import logging
 from time import mktime
 
 import requests
+
 from django.conf import settings
 
 from fun.utils.i18n import language_name
 import universities.models
 from videoproviders import models
+
 from .base import BaseClient, ClientError, MissingCredentials
 
 
@@ -32,6 +36,7 @@ class Client(BaseClient):
 
                 # Search for a playlist with the same name as the course id
                 course_id = unicode(self.course_id)
+                playlists = None
                 if ':' in course_id:  # It's a splitmongo course id
                     # try to get a playlist with the old key format (xx/xx/xx)
                     old_course_id = course_id.split(':')[1].replace('+', '/')  # transform to an old fashioned one to retrieve playlist from API

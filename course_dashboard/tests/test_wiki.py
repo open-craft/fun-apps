@@ -3,6 +3,7 @@
 from django.core.urlresolvers import reverse
 
 from courseware.tests.factories import InstructorFactory
+from student.models import CourseEnrollment
 from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
 from xmodule.modulestore.tests.factories import CourseFactory
 
@@ -17,7 +18,8 @@ class WikiTestCase(ModuleStoreTestCase):
         return URLPath.create_article(parent=parent, slug=slug, title=slug, article_kwargs={'owner': self.user})
 
     def setUp(self):
-        super(WikiTestCase, self).setUp(create_user=True)
+        self.CREATE_USER = True
+        super(WikiTestCase, self).setUp()
 
     def test_get_activity(self):
         from course_wiki.views import get_or_create_root

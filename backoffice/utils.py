@@ -11,6 +11,7 @@ from pure_pagination import Paginator, PageNotAnInteger
 
 from course_modes.models import CourseMode
 from opaque_keys.edx.keys import CourseKey
+from student.models import CourseEnrollment
 from xmodule.modulestore.django import modulestore
 
 
