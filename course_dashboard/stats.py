@@ -2,12 +2,10 @@ from collections import defaultdict
 from datetime import datetime
 from datetime import timedelta
 
-from django.conf import settings
 from django.db import connection
 from django.db.models import Count
 
 from certificates.models import GeneratedCertificate, CertificateStatuses
-from microsite_configuration import microsite
 from opaque_keys.edx.keys import CourseKey
 from opaque_keys import InvalidKeyError
 
@@ -109,8 +107,6 @@ def active_enrollments(course_key=None):
     Return a queryset of active course enrollments.
     """
     queryset = CourseEnrollment.objects.filter(is_active=True)
-    if settings.FEATURES['USE_MICROSITES']:
-        queryset = CourseEnrollment.objects.filter(user__usersignupsource__site=microsite.get_value('SITE_NAME'))
     if course_key is not None:
         queryset = queryset.filter(course_id=course_key)
 

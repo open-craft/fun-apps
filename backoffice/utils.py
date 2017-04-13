@@ -2,7 +2,6 @@
 
 from collections import defaultdict
 
-from django.conf import settings
 from django.contrib.auth import load_backend, BACKEND_SESSION_KEY
 from django.contrib.auth.decorators import user_passes_test
 from django.db.models import Count
@@ -11,9 +10,7 @@ from django.http import Http404
 from pure_pagination import Paginator, PageNotAnInteger
 
 from course_modes.models import CourseMode
-from microsite_configuration import microsite
 from opaque_keys.edx.keys import CourseKey
-from student.models import CourseEnrollment, UserSignupSource
 from xmodule.modulestore.django import modulestore
 
 
@@ -41,9 +38,6 @@ def group_required(*group_names):
     def in_groups(user):
         if user.is_authenticated():
             if bool(user.groups.filter(name__in=group_names)) or user.is_superuser:
-                if settings.FEATURES['USE_MICROSITES']:
-                    return UserSignupSource.objects.filter(user=user,
-                            site=microsite.get_value('SITE_NAME')).exists()
                 return True
             else:
                 # 403 errors are not properly handled. As a consequence, we

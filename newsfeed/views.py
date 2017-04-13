@@ -10,27 +10,14 @@ from django.utils.translation import ugettext_lazy as _
 from edxmako.shortcuts import render_to_response
 
 from pure_pagination import Paginator, EmptyPage
-from microsite_configuration import microsite
 
 from fun.utils.views import staff_required
 
 from . import models
 
 
-
 ARTICLES_PER_PAGE = 10
 
-def get_articles():
-    """
-    List viewable articles for the current site.
-
-    Note: We might want to filter on language and limit the queryset to the
-    first n results in the future (see the .featured() method).
-
-    Returns:
-        queryset
-    """
-    return filter_queryset_for_site(models.Article.objects.viewable())
 
 def paginate(queryset, page_nb, article_per_page):
     """
@@ -60,16 +47,16 @@ def paginate(queryset, page_nb, article_per_page):
 
 def top_news(count=5):
     """Return Top count news if available or fill result list with None for further boolean evaluation."""
-    articles = get_articles()[:count]
+    articles = models.Article.objects.viewable()[:count]
     return [articles[idx] if len(articles) > idx else None for idx in range(count)]
 
 def article_list(request):
     # We exclude the article that's selected in the featured section.
-    return render_articles(get_articles(), request.GET)
+    return render_articles(models.Article.objects.viewable(), request.GET)
 
 @staff_required
 def article_list_preview(request, slug):
-    qs = filter_queryset_for_site(models.Article.objects.published_or(slug=slug))
+    qs = models.Article.objects.published_or(slug=slug)
     return render_articles(qs, request.GET)
 
 def parse_request(get_dict):
@@ -92,11 +79,6 @@ def render_articles(articles_queryset, get_dict):
         'nb_items': {"start": start, "end": end},
     })
 
-def filter_queryset_for_site(queryset):
-    if settings.FEATURES['USE_MICROSITES']:
-        queryset = queryset.filter(microsite=microsite.get_value('SITE_NAME'))
-    return queryset
-
 
 def article_detail(request, slug):
     return render_article(models.Article.objects.published(), slug)
@@ -106,7 +88,7 @@ def article_preview(request, slug):
     return render_article(models.Article.objects.all(), slug)
 
 def render_article(queryset, slug):
-    article = get_object_or_404(filter_queryset_for_site(queryset), slug=slug)
+    article = get_object_or_404(queryset, slug=slug)
 
     url = 'https://%s%s' % (settings.LMS_BASE, article.get_absolute_url())
     twitter_action = 'https://twitter.com/intent/tweet?text=Actu+%s:+%s+%s' % (

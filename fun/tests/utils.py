@@ -54,28 +54,3 @@ class RSSDeclarationMixin():
         description = dict(dict(dict(feed)['channel'])['item'][0])['description']
         soup = BeautifulSoup(description)
         self.assertEqual(self.item2.title, soup.select('html h1 a')[0].text)
-
-
-### Microsite test settings
-
-def fake_microsite_get_value(name, default=None):
-    """
-    Create a fake microsite site name.
-    """
-    return settings.FAKE_MICROSITE.get(name, default)
-
-def setMicrositeTestSettings(microsite_settings=None):
-    """Decorator used to run test with microsite configuration.
-
-    We patch microsite.get_value function, used to get the microsite configuration from the current thread.
-    We patch the setting USE_MICROSITES, which activates the microsite functionality.
-    """
-    def wrapper(test_func):
-
-        fake_settings = microsite_settings or settings.FAKE_MICROSITE
-
-        test_func = mock.patch("microsite_configuration.microsite.get_value", fake_settings.get)(test_func)
-        return mock.patch.dict(settings.FEATURES, {'USE_MICROSITES' : True, 'USE_CUSTOM_THEME' : False})(test_func)
-    return wrapper
-
-

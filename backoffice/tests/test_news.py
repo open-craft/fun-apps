@@ -1,13 +1,11 @@
 from mock import patch
 
-#from django.conf import settings
 from django.core.urlresolvers import reverse
 
 from student.models import UserProfile
 from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
 
 from fun.tests.utils import skipUnlessLms
-#from fun.tests.utils import setMicrositeTestSettings
 from newsfeed.tests.factories import ArticleFactory
 
 
@@ -44,16 +42,3 @@ class TestNews(ModuleStoreTestCase):
 
         self.assertEqual(302, response.status_code)
         self.assertTrue(response['Location'].endswith(reverse('backoffice:news-detail', kwargs={'news_id': 42})))
-
-    # It seem that setMicrositeTestSettings is invoked even when CMS tests are running but
-    # CMS tests settings do not have FAKE_MICROSITE dict which makes skipUnlessLms to be ignored...
-    #@setMicrositeTestSettings()
-    #def test_get_microsite_news_from_different_microsite(self):
-    #    self.user.usersignupsource_set.create(site=settings.FAKE_MICROSITE['SITE_NAME'])
-    #    self.user.save()
-    #    news = ArticleFactory.create()
-    #    news.microsite = "The Dark Side Of The Moon"
-    #    news.save()
-    #    url = reverse("backoffice:news-detail", kwargs={"news_id": news.id})
-    #    response = self.client.get(url)
-    #    self.assertEqual(404, response.status_code)

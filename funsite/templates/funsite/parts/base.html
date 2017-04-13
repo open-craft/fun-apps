@@ -6,8 +6,6 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.utils.translation import get_language_bidi, ugettext as _
 
-from microsite_configuration import microsite
-
 dir_rtl = 'rtl' if get_language_bidi() else 'ltr'
 %>
 <%namespace name='static' file='/static_content.html'/>
@@ -28,7 +26,7 @@ dir_rtl = 'rtl' if get_language_bidi() else 'ltr'
 
     <%block name="meta_extra" />
 
-    <link rel="icon" type="image/x-icon" href="${static.url(microsite.get_value('favicon_path', settings.FAVICON_PATH))}" />
+    <link rel="icon" type="image/x-icon" href="${static.url(settings.FAVICON_PATH)}" />
     <link href="${static.url('funsite/bootstrap/css/bootstrap.min.css')}" rel="stylesheet">
     <link rel="stylesheet" href="${static.url('funsite/owl.carousel/assets/owl.carousel.css')}">
     <link href="${static.url('fun/css/cookie-banner.css')}" rel="stylesheet">

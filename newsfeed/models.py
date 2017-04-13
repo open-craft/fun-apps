@@ -103,8 +103,6 @@ class Article(models.Model):
     published = models.BooleanField(verbose_name=_("published"),
             default=False)
 
-    microsite = models.CharField(max_length=128, blank=True, db_index=True)
-
     objects = ArticleManager()
 
     class Meta:

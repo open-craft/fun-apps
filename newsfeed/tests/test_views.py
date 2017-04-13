@@ -7,8 +7,9 @@ from django.core.urlresolvers import reverse
 from student.tests.factories import UserFactory
 
 from fun.tests.utils import skipUnlessLms
-from . import factories
 
+from . import factories
+from ..models import Article
 
 @skipUnlessLms
 class ViewArticlesTest(TestCase):
@@ -125,8 +126,8 @@ class ViewArticlesTest(TestCase):
         """
         articles = []
         for i in range(5):
-            art = factories.ArticleFactory.create(title="Article {}".format(i), published=True)
-            articles.append(art)
+            articles.append(factories.ArticleFactory.create(
+                    title="Article {}".format(i), published=True))
 
         articles_per_page = 2
         url = reverse("newsfeed-landing")
@@ -136,7 +137,7 @@ class ViewArticlesTest(TestCase):
                      for i in ("broken", "20", "0")
                      ]
         contents = [r.content.decode("utf8") for r in responses]
-        titles = [unicode(art.title) for art in articles]
+        titles = [unicode(article.title) for article in articles]
 
         self.assertIn(titles[4], contents[0])
         self.assertIn(titles[3], contents[0])
@@ -156,12 +157,12 @@ class ViewArticlesTest(TestCase):
         self.assertNotIn(titles[4], contents[2])
 
     def test_sql_number_of_queries_in_paginate_for_page_1(self):
-        qs = self.views.get_articles()
+        qs = Article.objects.viewable()
         with self.assertNumQueries(2):
             self.views.paginate(qs, 1, 10)
 
     def test_sql_number_of_queries_in_paginate_for_page_2(self):
-        qs = self.views.get_articles()
+        qs = Article.objects.viewable()
         with self.assertNumQueries(1):
             self.views.paginate(qs, 2, 10)
 
@@ -169,6 +170,6 @@ class ViewArticlesTest(TestCase):
         upload_url = reverse('news-ckeditor-upload')
         browse_url = reverse('news-ckeditor-browse')
 
-        news_config = settings.CKEDITOR_CONFIGS['news']
+        news_config = settings.CKEDITOR_CONFIGS['default']
         self.assertEqual(upload_url, news_config['filebrowserUploadUrl'])
         self.assertEqual(browse_url, news_config['filebrowserBrowseUrl'])

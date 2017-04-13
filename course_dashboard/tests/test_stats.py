@@ -4,14 +4,12 @@ from django.utils import timezone
 
 from certificates.tests.factories import GeneratedCertificateFactory
 from certificates.models import CertificateStatuses
-from microsite_configuration import microsite
 from student.tests.factories import CourseEnrollmentFactory
 from student.tests.factories import UserFactory
 from xmodule.modulestore.tests.factories import CourseFactory
 
 import course_dashboard.stats as stats
 from fun.utils import countries
-from fun.tests.utils import setMicrositeTestSettings
 
 from .base import BaseCourseDashboardTestCase
 
@@ -116,14 +114,6 @@ class StatsTestCase(BaseCourseDashboardTestCase):
             {"username": 2},
         ]
         self.assertEqual(1, stats.most_active_username(threads))
-
-    @setMicrositeTestSettings
-    def test_enrollment_stats_with_microsite_configuration(self):
-        self.enroll_student(user=UserFactory(),
-                            course=CourseFactory.create(org=microsite.get_value('course_org_filter')))
-        self.enroll_student(user=self.user,
-                            course=self.course)
-        self.assertEqual(stats.active_enrollments().count(), 1)
 
     def test_certificate_honor_stats(self):
         GeneratedCertificateFactory(course_id=self.course.id, user=self.user,

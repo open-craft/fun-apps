@@ -17,12 +17,10 @@ from bulk_email.models import Optout
 from certificates.models import GeneratedCertificate, CertificateStatuses
 from course_modes.models import CourseMode
 from edxmako.shortcuts import render_to_string
-from microsite_configuration import microsite
 from student.models import CourseEnrollment, CourseAccessRole, UserStanding, UserProfile, Registration
 
 from xmodule_django.models import CourseKeyField
 
-from courses.models import Course
 from fun_certificates.generator import CertificateInfo
 from fun_certificates.utils import cert_id_encode
 from payment.models import TermsAndConditions, PAYMENT_TERMS
@@ -46,8 +44,6 @@ logger = logging.getLogger(__name__)
 def user_list(request):
     form = SearchUserForm(data=request.GET)
     user_profiles = UserProfile.objects
-    if settings.FEATURES['USE_MICROSITES']:
-        user_profiles = user_profiles.filter(user__usersignupsource__site=microsite.get_value('SITE_NAME'))
     total_count = user_profiles.count()
 
     user_profiles = user_profiles.select_related('user')
@@ -160,15 +156,13 @@ def resend_activation_email(request, user):
     context = {
         'name': user.profile.name,
         'key': Registration.objects.get(user=user).activation_key,
-        'site': microsite.get_value('SITE_NAME', settings.SITE_NAME)
+        'site': settings.SITE_NAME
     }
     subject = ''.join(render_to_string('emails/activation_email_subject.txt', context).splitlines())
     message = render_to_string('emails/activation_email.txt', context)
 
-    from_address = microsite.get_value(
-        'email_from_address',
-        settings.DEFAULT_FROM_EMAIL
-    )
+    from_address = settings.DEFAULT_FROM_EMAIL
+
     user.email_user(subject, message, from_address)
     logger.warning(u"Activation email has been resent to user %s at addresse: %s",
             user.username, user.email)
@@ -224,10 +218,7 @@ def hashid_for_verified(cert):
 
 @group_required('fun_backoffice')
 def user_detail(request, username):
-    if settings.FEATURES['USE_MICROSITES']:
-        users = User.objects.filter(usersignupsource__site=microsite.get_value('SITE_NAME'))
-    else:
-        users = User.objects.all()
+    users = User.objects.all()
     try:
         user = users.select_related('profile').get(username=username)
     except User.DoesNotExist:
