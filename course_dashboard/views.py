@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from collections import defaultdict
-from datetime import datetime
 import time
 
 from django.shortcuts import render
