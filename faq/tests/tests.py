@@ -9,7 +9,7 @@ from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
 
 from fun.tests.utils import skipUnlessLms
 
-from ..utils import connect_to_mongo, COLLECTION
+from ..utils import connect_and_drop_collection, COLLECTION
 
 now = datetime.datetime.now()
 article = {
@@ -28,13 +28,13 @@ article = {
 class FAQTest(ModuleStoreTestCase):
     def setUp(self):
         super(FAQTest, self).setUp()
-        db = connect_to_mongo()
-        db[COLLECTION].insert(article)
+        self.faq = connect_and_drop_collection(COLLECTION)
+        self.faq.insert(article)
+        del article['_id']
 
     def test_faq_index(self):
         response = self.client.get(reverse('faq:index'))
         self.assertEqual(200, response.status_code)
-
         soup = BeautifulSoup(response.content)
         self.assertEqual(u"Category name 1",
                 soup.find('ul', class_='faq-categories').find('h1').text.strip())
