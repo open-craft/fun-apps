@@ -188,7 +188,7 @@ for group in ['base_vendor', 'main_vendor']:
     PIPELINE_JS[group]['source_filenames'].append('funsite/js/header.js')
     PIPELINE_JS[group]['source_filenames'].append('fun/js/cookie-banner.js')
 
-FEATURES['ENABLE_DASHBOARD_SEARCH'] = True  # display a search box in student's dashboard to search in courses he is enrolled in.
+FEATURES['ENABLE_DASHBOARD_SEARCH'] = False  # display a search box in student's dashboard to search in courses he is enrolled in.
 FEATURES['ENABLE_COURSE_DISCOVERY'] = False  # display a search box and enable Backbone app on edX's course liste page which we do not use.
 
 # Payment
