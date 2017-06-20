@@ -2038,6 +2038,8 @@ l’adresse suivante
 | Charte graphique : S.Q.L.I. Group, 268, avenue du Président Wilson -
   93210 Saint-Denis
 
+*Dernière mise à jour : 19 Mai 2017*
+
 *Entrée en vigueur : 28 Octobre 2013*
 
 Ce traitement est en cours d'instruction auprès de la CNIL.
@@ -2070,7 +2072,7 @@ def add_new_lience(*a):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('payment', '0001_initial'),
+        ('payment', '0001_initial',),
     ]
 
     operations = [
@@ -2105,7 +2107,7 @@ class Migration(migrations.Migration):
             name='translatedterms',
             unique_together=set([('term', 'language')]),
         ),
-	migrations.RunPython(add_new_lience),
+        migrations.RunPython(add_new_lience),
     ]
 
 
